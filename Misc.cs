@@ -69,14 +69,18 @@ namespace AlderaminUtils
         /// <summary>
         /// 获取鼠标在世界空间的位置
         /// </summary>
-        /// <param name="distance"></param>
-        /// <returns></returns>
-        public static Vector3 GetWorldMousePosition(float distance)
+        /// <param name="distance">从摄像机出发的射线的预期距离</param>
+        /// <returns>鼠标击中物体的位置</returns>
+        public static RaycastHit GetMouseHitInfoInWorld(float distance, bool showDebugLine)
         {
             if (Camera.main is null) return default;
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            return Physics.Raycast(ray, out var hit, distance) ? hit.point : default;
+            RaycastHit hit;
+            if (!Physics.Raycast(ray, out hit, distance)) return hit;
+            if (showDebugLine) Debug.DrawLine(ray.origin, hit.point, Color.red);
+            return hit;
         }
+
 
         /// <summary>
         ///  随机一个数组中的元素
