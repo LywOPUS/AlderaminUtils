@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace AlderaminUtils
@@ -58,7 +60,7 @@ namespace AlderaminUtils
         /// 获取鼠标在世界中的位置
         /// </summary>
         /// <returns></returns>
-        public static Vector3 GetWorldMousePosition()
+        public static Vector3 GetMouseWorldPosition()
         {
             var mousePos = Input.mousePosition;
             if (Camera.main is null) return default;
@@ -82,22 +84,100 @@ namespace AlderaminUtils
         }
 
 
-        /// <summary>
-        ///  随机一个数组中的元素
-        /// </summary>
-        /// <param name="array"></param>
-        /// <param name="length"></param>
-        public static void RandomArray(int[] array, int length)
+        // 可以使用（a,b) = (b,a)交换值类型或引用类型 tuples需要c#7.0
+        //
+        public static void Swap<T>(ref T a, ref T b)
         {
-            int index;
-            int value;
-            for (int i = length - 1; i > 0; i--)
+            var temp = a;
+            a = b;
+            b = temp;
+        }
+
+        public static void Swap<T>(ref T a, ref T b, ref T c)
+        {
+            var temp = a;
+            a = b;
+            b = c;
+            c = temp;
+        }
+
+        public static void Swap<T>(ref T a, ref T b, ref T c, ref T d)
+        {
+            var temp = a;
+            a = b;
+            b = c;
+            c = d;
+            d = temp;
+        }
+
+        public static void ForeachFourDirection<T>(int x, int y, T[,] tragetArray)
+        {
+            var offX = new int[4] {1, 0, -1, 0};
+            var offY = new int[4] {0, 1, -1, 0};
+            for (var i = 0; i < 4; i++)
             {
-                index = Random.Range(0, i + 1);
-                value = array[i];
-                array[i] = array[index];
-                array[index] = value;
+                x += offX[i];
+                y += offY[i];
+                var r = tragetArray[x, y];
+                Debug.Log(r);
             }
+        }
+
+        /// <summary>
+        /// 当目标数组为为私有时
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="getArrayObjectFunc"></param>
+        /// <typeparam name="T"></typeparam>
+        public static void ForeachFourDirection<T>(int x, int y, Func<int, int, T> getArrayObjectFunc)
+        {
+            var dX = new int[4] {1, 0, -1, 0};
+            var dY = new int[4] {0, 1, 0, -1};
+            for (var i = 0; i < 4; i++)
+            {
+                var offX = x + dX[i];
+                var offY = y + dY[i];
+                var r = getArrayObjectFunc(offX, offY);
+                Debug.Log($"{r} : {dX[i]},{dY[i]}");
+            }
+        }
+
+        public static List<T> GetNeighbors4<T>(int x, int y, int width, int height, Func<int, int, T> getArrayObjectFunc)
+        {
+            var list = new List<T>();
+            var dX = new int[4] {1, 0, -1, 0};
+            var dY = new int[4] {0, 1, 0, -1};
+            for (var i = 0; i < 4; i++)
+            {
+                var offX = x + dX[i];
+                var offY = y + dY[i];
+                if (offX >= 0 && offX < width && offY >= 0 && offY < height)
+                {
+                    list.Add(getArrayObjectFunc(offX, offY));
+                }
+            }
+
+            return list;
+        }
+
+        public static List<T> GetNeighbors<T>(int x, int y, int width,
+            int height, Func<int, int, T> getArrayObjectFunc)
+        {
+            var list = new List<T>();
+            var dX = new int[8] {1, 1, 0, -1, -1, -1, 0, 1};
+            var dY = new int[8] {0, 1, 1, 1, 0, -1, -1, -1};
+            for (var i = 0; i < 8; i++)
+            {
+                var offX = x + dX[i];
+                var offY = y + dY[i];
+                if (offX >= 0 && offX < width && offY >= 0 && offY < height)
+                {
+                    list.Add(getArrayObjectFunc(offX, offY));
+                }
+            }
+
+            return list;
         }
     }
 }
