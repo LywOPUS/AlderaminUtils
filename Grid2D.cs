@@ -14,7 +14,7 @@ namespace AlderaminUtils
         private Vector3 _originPosition;
         public int GetHeight() => _height;
         public int GetWidth() => _width;
-
+        public Color color = Color.white;
         public event EventHandler<GridChangeEventArgs> OnGridMapValueChangeEvent;
 
         public void TriggerGridMapValueChangeEvent(int x, int y)
@@ -54,17 +54,17 @@ namespace AlderaminUtils
                     {
                         _debugTextArray[x, y] = Tool.CreateWorldText(_gridArray[x, y].ToString(), null,
                             GetWorldPosition(x, y) + .5f * new Vector3(cellSize, cellSize), 20,
-                            Color.white,
+                            color,
                             TextAnchor.MiddleCenter);
-                        Debug.DrawLine(GetWorldPosition(x, y), GetWorldPosition(x, y + 1), Color.white, 100f);
-                        Debug.DrawLine(GetWorldPosition(x, y), GetWorldPosition(x + 1, y), Color.white, 100f);
+                        Debug.DrawLine(GetWorldPosition(x, y), GetWorldPosition(x, y + 1), color, 100f);
+                        Debug.DrawLine(GetWorldPosition(x, y), GetWorldPosition(x + 1, y), color, 100f);
                     }
                 }
 
                 if (showDebug)
                 {
-                    Debug.DrawLine(GetWorldPosition(0, height), GetWorldPosition(width, height), Color.white, 100f);
-                    Debug.DrawLine(GetWorldPosition(width, height), GetWorldPosition(width, 0), Color.white, 100f);
+                    Debug.DrawLine(GetWorldPosition(0, height), GetWorldPosition(width, height), color, 100f);
+                    Debug.DrawLine(GetWorldPosition(width, height), GetWorldPosition(width, 0), color, 100f);
 
                     OnGridMapValueChangeEvent += (sender, eventArgs) =>
                     {
